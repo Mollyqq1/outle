@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -14,7 +14,7 @@ CHOICE, UNITS = range(2)
 # --- Ставки для видов работ ---
 RATES = {
     'приёмка': 11.1,
-    'упаковка': 0  # ← сюда позже добавим реальную ставку
+    'упаковка': 0  # сюда можно позже добавить реальную ставку
 }
 
 # --- Распознавание ввода пользователя ---
@@ -29,16 +29,12 @@ CHOICE_MAP = {
 # --- Старт бота ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [["1", "2"], ["приёмка", "упаковка"]]
-    reply_markup = {
-        "keyboard": keyboard,
-        "one_time_keyboard": True,
-        "resize_keyboard": True
-    }
+    reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     await update.message.reply_text(
         "Выберите тип работы:\n"
         "1 — Приёмка\n2 — Упаковка\n"
         "Можно ввести текстом или цифрой.",
-
+        reply_markup=reply_markup
     )
     return CHOICE
 
@@ -56,7 +52,6 @@ async def choice_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     context.user_data['choice'] = choice
 
-    # Вопрос в зависимости от выбора
     question = {
         'приёмка': "Сколько единиц ты принял(а)?",
         'упаковка': "Сколько единиц ты упаковал(а)?"
@@ -92,7 +87,11 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 # --- Запуск приложения ---
-app = ApplicationBuilder().token("7683938482:AAFOLX_Nd8q1tDOz9eG9-N76TnDGYWlOirw").build()
+import os
+
+TOKEN = os.getenv("BOT_TOKEN")  # Или вставь токен напрямую: TOKEN = "твой_токен_бота"
+
+app = ApplicationBuilder().token(TOKEN).build()
 
 conv_handler = ConversationHandler(
     entry_points=[CommandHandler('start', start)],
