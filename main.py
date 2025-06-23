@@ -1,3 +1,4 @@
+
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
@@ -13,8 +14,9 @@ CHOICE, UNITS = range(2)
 
 # --- Ставки для видов работ ---
 RATES = {
-    'приёмка': 11.1,
+    'приёмка': 12.76,
     'упаковка': 0  # сюда можно позже добавить реальную ставку
+
 }
 
 # --- Распознавание ввода пользователя ---
@@ -28,7 +30,7 @@ CHOICE_MAP = {
 
 # --- Старт бота ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [["1", "2"], ["приёмка", "упаковка"]]
+    keyboard = ["приёмка", "упаковка"]
     reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
     await update.message.reply_text(
         "Выберите тип работы:\n"
@@ -74,9 +76,9 @@ async def units_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     rate = RATES.get(choice, 0)
 
     if units >= 301:
-        salary = units * rate * 1.4 + 2786
+        salary = (units * rate * 1.4 + 3202.5) * 0.87
     else:
-        salary = units * rate + 2786
+        salary = units * rate + 3202.5 * 0.87
 
     await update.message.reply_text(f"Ваша зарплата за сегодня: {salary:.2f} руб.")
     return ConversationHandler.END
