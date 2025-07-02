@@ -76,11 +76,11 @@ async def units_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     rate = RATES.get(choice, 0)
 
     if units >= 301:
-        salary = (units * rate * 1.4 + 3202.5) * 0.87
+        salary = (units * rate * 1.4) * 0.87
     else:
-        salary = units * rate + 3202.5 * 0.87
+        salary = units * rate * 0.87
 
-    await update.message.reply_text(f"Ваша зарплата за сегодня: {salary:.2f} руб.")
+    await update.message.reply_text(f"Сегодня ты пикнул(а) на: {salary:.2f} руб.")
     return ConversationHandler.END
 
 # --- Команда /cancel ---
